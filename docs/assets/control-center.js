@@ -1,9 +1,8 @@
 (() => {
   const STORAGE_KEYS = {
-    overlay: 'obs_broadcast_overlay_v2',
-    cameras: 'obs_broadcast_cameras_v2',
-    media: 'obs_broadcast_media_v2',
-    calls: 'obs_broadcast_calls_v2'
+    overlay: 'obs_broadcast_overlay_v1',
+    cameras: 'obs_broadcast_cameras_v1',
+    media: 'obs_broadcast_media_v1'
   };
 
   const CHANNEL_NAME = 'obs_broadcast_overlay_channel';
@@ -20,24 +19,6 @@
 
   const setJson = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-  const escapeHtml = (value) =>
-    String(value)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-
-  const safeUrl = (url) => {
-    try {
-      const parsed = new URL(url);
-      if (parsed.protocol === 'https:' || parsed.protocol === 'http:') return parsed.toString();
-    } catch {
-      return '';
-    }
-    return '';
-  };
-
   const asYouTubeEmbed = (url) => {
     try {
       const parsed = new URL(url);
@@ -52,12 +33,6 @@
       return '';
     }
     return '';
-  };
-
-  const effectPresets = {
-    clean: { shadow: 'none', filter: 'none' },
-    cinematic: { shadow: '0 8px 35px rgba(42,121,255,0.45)', filter: 'saturate(1.15) contrast(1.08)' },
-    neon: { shadow: '0 0 18px rgba(0,255,255,0.75)', filter: 'saturate(1.35) brightness(1.08)' }
   };
 
   const publishOverlayData = (data) => {
@@ -79,16 +54,14 @@
       document.getElementById('ovSB').textContent = String(data.scoreB ?? 0);
       document.getElementById('ovTimer').textContent = data.timer || '00:00';
       shell.style.setProperty('--accent', data.accent || '#2a79ff');
-      shell.style.opacity = `${Number(data.opacity ?? 92) / 100}`;
-
-      const preset = effectPresets[data.effectPreset] || effectPresets.clean;
-      shell.style.boxShadow = preset.shadow;
-      shell.style.filter = preset.filter;
     };
 
     apply(getJson(STORAGE_KEYS.overlay, {}));
 
-    if (channel) channel.addEventListener('message', (ev) => apply(ev.data));
+    if (channel) {
+      channel.addEventListener('message', (ev) => apply(ev.data));
+    }
+
     window.addEventListener('storage', (ev) => {
       if (ev.key === STORAGE_KEYS.overlay && ev.newValue) {
         try { apply(JSON.parse(ev.newValue)); } catch {}
@@ -97,23 +70,19 @@
     return;
   }
 
-  const byId = (id) => document.getElementById(id);
-  if (!byId('publishOverlay')) return;
-
+  // Control Center
   const overlay = {
-    title: byId('overlayTitle'),
-    subtitle: byId('overlaySubtitle'),
-    teamA: byId('teamA'),
-    teamB: byId('teamB'),
-    scoreA: byId('scoreA'),
-    scoreB: byId('scoreB'),
-    timer: byId('timer'),
-    accent: byId('accent'),
-    effectPreset: byId('effectPreset'),
-    opacity: byId('overlayOpacity')
+    title: document.getElementById('overlayTitle'),
+    subtitle: document.getElementById('overlaySubtitle'),
+    teamA: document.getElementById('teamA'),
+    teamB: document.getElementById('teamB'),
+    scoreA: document.getElementById('scoreA'),
+    scoreB: document.getElementById('scoreB'),
+    timer: document.getElementById('timer'),
+    accent: document.getElementById('accent')
   };
 
-  const overlayUrlOutput = byId('overlayUrlOutput');
+  const overlayUrlOutput = document.getElementById('overlayUrlOutput');
   const overlayUrl = `${window.location.origin}${window.location.pathname.replace('control-center.html', 'obs-browser-overlay.html')}`;
   overlayUrlOutput.textContent = `URL para Browser Source en OBS: ${overlayUrl}`;
 
@@ -127,8 +96,6 @@
     overlay.scoreB.value = Number(state.scoreB ?? 0);
     overlay.timer.value = state.timer || '';
     overlay.accent.value = state.accent || '#2a79ff';
-    overlay.effectPreset.value = state.effectPreset || 'clean';
-    overlay.opacity.value = Number(state.opacity ?? 92);
   };
 
   const collectOverlay = () => ({
@@ -139,40 +106,39 @@
     scoreA: Number(overlay.scoreA.value || 0),
     scoreB: Number(overlay.scoreB.value || 0),
     timer: overlay.timer.value.trim(),
-    accent: overlay.accent.value,
-    effectPreset: overlay.effectPreset.value,
-    opacity: Number(overlay.opacity.value || 92)
+    accent: overlay.accent.value
   });
 
-  byId('publishOverlay').addEventListener('click', () => publishOverlayData(collectOverlay()));
-  byId('resetOverlay').addEventListener('click', () => {
+  document.getElementById('publishOverlay').addEventListener('click', () => {
+    publishOverlayData(collectOverlay());
+  });
+
+  document.getElementById('resetOverlay').addEventListener('click', () => {
     const empty = {
-      title: '', subtitle: '', teamA: '', teamB: '', scoreA: 0, scoreB: 0, timer: '',
-      accent: '#2a79ff', effectPreset: 'clean', opacity: 92
+      title: '', subtitle: '', teamA: '', teamB: '', scoreA: 0, scoreB: 0, timer: '', accent: '#2a79ff'
     };
     publishOverlayData(empty);
     hydrateOverlayForm();
   });
-  byId('openOverlayPreview').addEventListener('click', () => window.open(overlayUrl, '_blank', 'noopener,noreferrer'));
+
+  document.getElementById('openOverlayPreview').addEventListener('click', () => {
+    window.open(overlayUrl, '_blank', 'noopener,noreferrer');
+  });
 
   // Cameras
-  const cameraGrid = byId('cameraGrid');
+  const cameraGrid = document.getElementById('cameraGrid');
   const renderCameras = () => {
     const cameras = getJson(STORAGE_KEYS.cameras, []);
     cameraGrid.innerHTML = '';
     cameras.forEach((cam, idx) => {
-      const name = escapeHtml(cam.name);
-      const url = safeUrl(cam.url);
-      if (!url) return;
-
       const el = document.createElement('article');
       el.className = 'camera-tile';
       el.innerHTML = `
         <header class="camera-head">
-          <strong>${name}</strong>
+          <strong>${cam.name}</strong>
           <button class="btn" data-remove="${idx}">Quitar</button>
         </header>
-        <iframe class="camera-frame" src="${url}" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        <iframe class="camera-frame" src="${cam.url}" loading="lazy" referrerpolicy="no-referrer"></iframe>
       `;
       cameraGrid.appendChild(el);
     });
@@ -188,9 +154,9 @@
     });
   };
 
-  byId('addCamera').addEventListener('click', () => {
-    const name = byId('cameraName').value.trim();
-    const url = safeUrl(byId('cameraUrl').value.trim());
+  document.getElementById('addCamera').addEventListener('click', () => {
+    const name = document.getElementById('cameraName').value.trim();
+    const url = document.getElementById('cameraUrl').value.trim();
     if (!name || !url) return;
     const cameras = getJson(STORAGE_KEYS.cameras, []);
     cameras.push({ name, url });
@@ -198,92 +164,33 @@
     renderCameras();
   });
 
-  byId('clearCameras').addEventListener('click', () => {
+  document.getElementById('clearCameras').addEventListener('click', () => {
     setJson(STORAGE_KEYS.cameras, []);
     renderCameras();
   });
 
-  // Calls Jitsi/Zoom
-  const callList = byId('callList');
-  const renderCalls = () => {
-    const calls = getJson(STORAGE_KEYS.calls, []);
-    callList.innerHTML = '';
-    calls.forEach((call, idx) => {
-      const title = escapeHtml(call.title || 'Llamada');
-      const url = safeUrl(call.url);
-      const provider = escapeHtml(call.provider);
-      if (!url) return;
-
-      const item = document.createElement('article');
-      item.className = 'media-item';
-      item.innerHTML = `
-        <header class="media-head">
-          <strong>${title}</strong>
-          <button class="btn" data-remove-call="${idx}">Quitar</button>
-        </header>
-        <div class="media-body">
-          <p class="note">${provider.toUpperCase()}</p>
-          <iframe class="media-embed" src="${url}" loading="lazy" referrerpolicy="no-referrer"></iframe>
-          <p><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir llamada en nueva pestaña</a></p>
-        </div>
-      `;
-      callList.appendChild(item);
-    });
-
-    callList.querySelectorAll('[data-remove-call]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const idx = Number(btn.getAttribute('data-remove-call'));
-        const calls = getJson(STORAGE_KEYS.calls, []);
-        calls.splice(idx, 1);
-        setJson(STORAGE_KEYS.calls, calls);
-        renderCalls();
-      });
-    });
-  };
-
-  byId('addCall').addEventListener('click', () => {
-    const provider = byId('callProvider').value;
-    const title = byId('callTitle').value.trim();
-    const url = safeUrl(byId('callUrl').value.trim());
-    if (!url) return;
-    const calls = getJson(STORAGE_KEYS.calls, []);
-    calls.push({ provider, title, url });
-    setJson(STORAGE_KEYS.calls, calls);
-    renderCalls();
-  });
-
-  byId('clearCalls').addEventListener('click', () => {
-    setJson(STORAGE_KEYS.calls, []);
-    renderCalls();
-  });
-
   // Media URL manager
-  const mediaList = byId('mediaList');
+  const mediaList = document.getElementById('mediaList');
   const renderMedia = () => {
     const items = getJson(STORAGE_KEYS.media, []);
     mediaList.innerHTML = '';
 
     items.forEach((item, idx) => {
-      const title = escapeHtml(item.title || 'Media');
-      const platform = escapeHtml(item.platform);
-      const url = safeUrl(item.url);
-      if (!url) return;
-
       const el = document.createElement('article');
       el.className = 'media-item';
 
-      const embed = item.platform === 'youtube' ? asYouTubeEmbed(url) : '';
+      const embed = item.platform === 'youtube' ? asYouTubeEmbed(item.url) : '';
       const body = embed
         ? `<iframe class="media-embed" src="${embed}" allowfullscreen></iframe>`
-        : `<p><a href="${url}" target="_blank" rel="noopener noreferrer">Abrir enlace</a></p>`;
+        : `<p><a href="${item.url}" target="_blank" rel="noopener noreferrer">Abrir enlace</a></p>`;
 
       el.innerHTML = `
         <header class="media-head">
-          <strong>${title}</strong>
+          <strong>${item.title || 'Media'}</strong>
           <button class="btn" data-remove-media="${idx}">Quitar</button>
         </header>
         <div class="media-body">
-          <p class="note">${platform.toUpperCase()}</p>
+          <p class="note">${item.platform.toUpperCase()}</p>
           ${body}
         </div>
       `;
@@ -301,10 +208,10 @@
     });
   };
 
-  byId('addMedia').addEventListener('click', () => {
-    const platform = byId('mediaPlatform').value;
-    const title = byId('mediaTitle').value.trim();
-    const url = safeUrl(byId('mediaUrl').value.trim());
+  document.getElementById('addMedia').addEventListener('click', () => {
+    const platform = document.getElementById('mediaPlatform').value;
+    const title = document.getElementById('mediaTitle').value.trim();
+    const url = document.getElementById('mediaUrl').value.trim();
     if (!url) return;
     const items = getJson(STORAGE_KEYS.media, []);
     items.push({ platform, title, url });
@@ -312,13 +219,12 @@
     renderMedia();
   });
 
-  byId('clearMedia').addEventListener('click', () => {
+  document.getElementById('clearMedia').addEventListener('click', () => {
     setJson(STORAGE_KEYS.media, []);
     renderMedia();
   });
 
   hydrateOverlayForm();
   renderCameras();
-  renderCalls();
   renderMedia();
 })();

@@ -1,115 +1,108 @@
 # OBS Broadcast Suite Plugin
 
-Plugin multifuncional para OBS orientado a broadcast deportivo. Este repositorio entrega:
+Plugin multifuncional para OBS orientado a broadcast deportivo. Este repositorio implementa la **FASE 1** del plugin nativo y una **suite web funcional inicial** para operación por URL (OBS Browser Source).
 
-- Base de plugin nativo OBS (FASE 1)
-- Suite web funcional para operación por URL (OBS Browser Source)
-- Despliegue automatizado en GitHub Pages
+## Estado actual
 
-## Estado funcional actual
+- Plugin base como módulo cargable (`obs-broadcast-suite`).
+- Punto de entrada `obs_module_load()` y `obs_module_unload()`.
+- Trazas de diagnóstico para validar ciclo de vida del módulo.
+- Modo `fallback` para compilar sin SDK de OBS.
+- Sitio web en `docs/` con:
+  - landing del proyecto,
+  - control center web para overlays/multicámara/media URL,
+  - overlay dedicado para insertar como Browser Source en OBS.
 
-### Plugin nativo
-
-- Módulo base `obs-broadcast-suite`
-- `obs_module_load()` y `obs_module_unload()` con logs
-- Compilación fallback sin SDK OBS
-
-### Suite web oficial
-
-- `docs/index.html` (landing)
-- `docs/control-center.html` (control maestro)
-- `docs/obs-browser-overlay.html` (overlay para Browser Source)
-- `docs/virtual-studio.html` (editor online beta / virtual studio)
-
-#### Capacidades implementadas
-
-- Overlays dinámicos (marcador, título, timer, color)
-- Presets visuales tipo StreamFX-like (`clean`, `cinematic`, `neon`) implementados con CSS/JS original
-- Multicámara por URLs web
-- Integración de videollamadas Jitsi Meet / Zoom Web mediante URL
-- Media manager por URL/embeds oficiales
-
-> Cumplimiento legal: no se implementa descarga de contenido de YouTube/TikTok/terceros. Se soportan enlaces/embeds oficiales.
-
-## Arquitectura
+## Arquitectura inicial
 
 ```text
 .
 ├── CMakeLists.txt
-├── src/plugin_main.cpp
-├── third_party/obs_fallback/obs-module.h
-├── .github/workflows/pages.yml
+├── src/
+│   └── plugin_main.cpp
+├── third_party/
+│   └── obs_fallback/
+│       └── obs-module.h
 └── docs/
     ├── index.html
     ├── control-center.html
     ├── obs-browser-overlay.html
-    ├── virtual-studio.html
     └── assets/
         ├── site.css
-        ├── control-center.css
-        └── control-center.js
+        └── control-center.css / control-center.js
 ```
 
-## Build del plugin
+## Compilación plugin
+
+### Opción A: local sin SDK OBS (fallback)
 
 ```bash
 cmake -S . -B build
 cmake --build build
 ```
 
-Con SDK OBS real:
+### Opción B: contra SDK OBS real
 
 ```bash
 cmake -S . -B build -DUSE_OBS_SDK=ON -DOBS_SDK_PATH=/ruta/al/obs-studio
 cmake --build build
 ```
 
-## Vista previa local (web)
+## Suite web oficial (funcional desde URL)
+
+### Vista local
 
 ```bash
 python -m http.server 8000
 ```
 
-Rutas:
+Abrir:
 
 - Landing: `http://127.0.0.1:8000/docs/`
 - Control Center: `http://127.0.0.1:8000/docs/control-center.html`
-- Overlay OBS: `http://127.0.0.1:8000/docs/obs-browser-overlay.html`
-- Studio Beta: `http://127.0.0.1:8000/docs/virtual-studio.html`
+- Overlay Browser Source: `http://127.0.0.1:8000/docs/obs-browser-overlay.html`
 
-## Integración OBS Browser Source
+### Funcionalidades disponibles
 
-1. En OBS, agregar fuente **Browser**.
-2. Pegar URL de `obs-browser-overlay.html`.
-3. En paralelo abrir `control-center.html` para operar overlays/calls/media.
+- **Overlays dinámicos:** marcador, título, subtítulo, timer y color de acento.
+- **Multicámara web:** grid de URLs con iframes para monitoreo operativo.
+- **Media URL Manager:** gestión de enlaces y embeds oficiales (YouTube embed, TikTok/link, URL directa).
+- **Compatibilidad OBS Browser Source:** URL overlay lista para pegar en OBS.
+
+> Cumplimiento: esta versión **no implementa descarga** de contenido de YouTube/TikTok/terceros. Solo integración por URL/embeds oficiales para respetar TOS, derechos y licencias.
 
 ## GitHub Pages
 
 Workflow: `.github/workflows/pages.yml`
 
-- Construye artefacto de sitio
-- Reemplaza `__OBS_STUDIO_CREATOR_URL__`
-- Despliega en `github-pages`
+- despliega `docs/` como sitio,
+- reemplaza `__OBS_STUDIO_CREATOR_URL__` durante build,
+- publica en entorno `github-pages`.
 
-Variable opcional de repo:
+### Configuración de URL de OBS Studio Creator
 
-- `OBS_STUDIO_CREATOR_URL` en Settings → Secrets and variables → Actions → Variables
+Variable requerida en repositorio:
 
-### Error `Get Pages site failed (Not Found)`
+- `OBS_STUDIO_CREATOR_URL` en **Settings → Secrets and variables → Actions → Variables**
 
-Este repo usa auto-enable en workflow:
+Si no se configura, se usa fallback de ejemplo.
+
+### Solución al error "Get Pages site failed (Not Found)"
+
+Si falla `actions/configure-pages` por `Not Found`, normalmente Pages no está habilitado aún.
+Este repo usa auto-enable:
 
 - `actions/configure-pages@v5` + `enablement: true`
 
-Si persiste, revisar permisos de Actions/Pages a nivel organización/repositorio.
+Verificar además permisos de Actions/Pages y rama de trigger (`main`, `master`, `work`).
 
-## Distribución Windows
+## Distribución en Windows (.exe descargable)
 
-Ver `docs/windows-exe-build.md`.
+Guía completa: `docs/windows-exe-build.md`.
 
-## Licencias
+## Política de licencias de dependencias
 
-Solo MIT/BSD/Apache-2.0 permitidas.
-No se incluye GPL/AGPL/LGPL en el código del repo.
+Se admiten exclusivamente dependencias con licencia MIT/BSD/Apache-2.0.
+No se incorporan dependencias GPL/AGPL/LGPL en el código del repositorio.
 
-Ver `DEPENDENCY_LICENSES.md`.
+Ver detalle en `DEPENDENCY_LICENSES.md`.

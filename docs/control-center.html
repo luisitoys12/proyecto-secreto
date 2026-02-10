@@ -14,14 +14,13 @@
         <ul>
           <li><a href="#overlays">Overlays</a></li>
           <li><a href="#multiview">Multicámara</a></li>
-          <li><a href="#calls">Jitsi/Zoom</a></li>
           <li><a href="#media">Media URL</a></li>
         </ul>
       </nav>
       <section class="container hero-content compact">
         <p class="kicker">Versión oficial web · OBS Browser Source Ready</p>
         <h1>Control Center Web</h1>
-        <p>Controla overlays dinámicos, vista multicámara, videollamadas y fuentes web para tu producción broadcast.</p>
+por        <p>Controla overlays dinámicos, vista multicámara y fuentes web para tu producción broadcast.</p>
       </section>
     </header>
 
@@ -53,16 +52,6 @@
           <label>Color primario
             <input id="accent" type="color" value="#2a79ff" />
           </label>
-          <label>Estilo visual (StreamFX-like)
-            <select id="effectPreset">
-              <option value="clean">Clean</option>
-              <option value="cinematic">Cinematic Glow</option>
-              <option value="neon">Neon Edge</option>
-            </select>
-          </label>
-          <label>Opacidad overlay
-            <input id="overlayOpacity" type="range" min="35" max="100" step="1" value="92" />
-          </label>
         </div>
         <div class="cta-row">
           <button class="btn btn-primary" id="publishOverlay">Publicar overlay</button>
@@ -90,30 +79,6 @@
         <div id="cameraGrid" class="camera-grid"></div>
       </section>
 
-      <section id="calls" class="card-section full-width">
-        <h2>Integración videollamadas (Jitsi Meet / Zoom Web)</h2>
-        <p class="note">Esta capa permite incrustar/supervisar URLs de sala web para rutearlas a escenas OBS vía Browser Source.</p>
-        <div class="field-grid triple">
-          <label>Proveedor
-            <select id="callProvider">
-              <option value="jitsi">Jitsi Meet</option>
-              <option value="zoom">Zoom Web Client</option>
-            </select>
-          </label>
-          <label>Título de sala
-            <input id="callTitle" type="text" placeholder="Entrevista post-partido" />
-          </label>
-          <label>URL sala
-            <input id="callUrl" type="url" placeholder="https://meet.jit.si/... o https://zoom.us/wc/..." />
-          </label>
-        </div>
-        <div class="cta-row">
-          <button class="btn btn-primary" id="addCall">Agregar llamada</button>
-          <button class="btn" id="clearCalls">Limpiar llamadas</button>
-        </div>
-        <div id="callList" class="media-list"></div>
-      </section>
-
       <section id="media" class="card-section full-width">
         <h2>Media URL Manager (legal-safe)</h2>
         <p>
@@ -138,7 +103,6 @@
         <div class="cta-row">
           <button class="btn btn-primary" id="addMedia">Agregar media</button>
           <button class="btn" id="clearMedia">Limpiar media</button>
-          <a class="btn" href="./virtual-studio.html">Abrir Studio Virtual Beta</a>
         </div>
         <div id="mediaList" class="media-list"></div>
       </section>
