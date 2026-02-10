@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OBS Broadcast Suite | Virtual Studio Beta</title>
+    <link rel="stylesheet" href="./assets/site.css" />
+    <link rel="stylesheet" href="./assets/control-center.css" />
+  </head>
+  <body>
+    <header class="hero thin">
+      <nav class="container nav">
+        <a class="brand" href="./index.html">OBS Broadcast Suite</a>
+        <ul>
+          <li><a href="./control-center.html">Control Center</a></li>
+          <li><a href="#editor">Editor Online Beta</a></li>
+        </ul>
+      </nav>
+      <section class="container hero-content compact">
+        <p class="kicker">Virtual Studio Multimedia</p>
+        <h1>Editor Online Beta</h1>
+        <p>Diseña plantillas rápidas de lower thirds y guiones de escena para producción en vivo.</p>
+      </section>
+    </header>
+
+    <main class="container grid-2">
+      <section id="editor" class="card-section">
+        <h2>Editor de Lower Third</h2>
+        <div class="field-grid">
+          <label>Nombre
+            <input id="vsName" type="text" placeholder="Narrador Principal" />
+          </label>
+          <label>Rol
+            <input id="vsRole" type="text" placeholder="Comentarista" />
+          </label>
+          <label>Paleta
+            <input id="vsColor" type="color" value="#2a79ff" />
+          </label>
+        </div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="vsRender">Render preview</button>
+          <button class="btn" id="vsReset">Reset</button>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>Preview</h2>
+        <div class="overlay-shell" id="vsShell">
+          <header>
+            <p id="vsNameOut">Nombre</p>
+            <small id="vsRoleOut">Rol</small>
+          </header>
+          <div class="scoreline">
+            <span>Studio</span>
+            <strong>LIVE</strong>
+            <span>BETA</span>
+          </div>
+          <footer><span>OBS WEB</span><span>READY</span></footer>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const byId = (id) => document.getElementById(id);
+        const render = () => {
+          byId('vsNameOut').textContent = byId('vsName').value || 'Nombre';
+          byId('vsRoleOut').textContent = byId('vsRole').value || 'Rol';
+          byId('vsShell').style.setProperty('--accent', byId('vsColor').value || '#2a79ff');
+        };
+        byId('vsRender').addEventListener('click', render);
+        byId('vsReset').addEventListener('click', () => {
+          byId('vsName').value = '';
+          byId('vsRole').value = '';
+          byId('vsColor').value = '#2a79ff';
+          render();
+        });
+        render();
+      })();
+    </script>
+  </body>
+</html>

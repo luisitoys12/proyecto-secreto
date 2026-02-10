@@ -1,0 +1,146 @@
+.thin {
+  padding-bottom: 1rem;
+}
+
+.compact {
+  padding: 1.4rem 0 1rem;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  margin: 1.2rem auto 2rem;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.field-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.field-grid.triple {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+input,
+select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  background: #09142b;
+  color: var(--text);
+}
+
+.camera-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.8rem;
+}
+
+.camera-tile,
+.media-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #09142b;
+}
+
+.camera-head,
+.media-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.camera-frame {
+  width: 100%;
+  min-height: 200px;
+  border: 0;
+  background: #040916;
+}
+
+.media-list {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.media-body {
+  padding: 0.65rem;
+}
+
+.media-embed {
+  width: 100%;
+  min-height: 260px;
+  border: 0;
+}
+
+.overlay-body {
+  margin: 0;
+  background: transparent;
+  color: white;
+  font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.overlay-shell {
+  margin: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  width: min(760px, calc(100vw - 24px));
+  background: linear-gradient(120deg, rgba(10, 24, 45, 0.9), rgba(6, 14, 30, 0.85));
+  --accent: #2a79ff;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.45);
+}
+
+.overlay-shell header p {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.overlay-shell header small {
+  color: #b5c7ef;
+}
+
+.scoreline {
+  margin-top: 10px;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.scoreline strong {
+  font-size: clamp(1.3rem, 2vw, 2rem);
+}
+
+.overlay-shell footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+}
