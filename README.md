@@ -78,3 +78,15 @@ Archivos principales:
 
 > Importante: actualizar enlaces de ejemplo (`ORG_O_USUARIO`) antes de publicar.
 
+
+
+### Configuración de URL de OBS Studio Creator (GitHub Pages)
+
+El despliegue del sitio reemplaza automáticamente el placeholder `__OBS_STUDIO_CREATOR_URL__` en `docs/index.html` mediante el workflow de Pages.
+
+Configura la variable del repositorio:
+
+- `OBS_STUDIO_CREATOR_URL` en **Settings → Secrets and variables → Actions → Variables**
+
+Si no se configura, se utiliza un fallback de ejemplo en el workflow.
+
