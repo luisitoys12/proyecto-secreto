@@ -2,36 +2,36 @@
 
 ## Cambios realizados en esta versión
 
-- Se reforzó el workflow de GitHub Pages en `.github/workflows/pages.yml` para construir un artefacto `_site/` y reemplazar dinámicamente el placeholder `__OBS_STUDIO_CREATOR_URL__`.
-- Se añadió soporte de variable de repositorio `OBS_STUDIO_CREATOR_URL` para controlar la URL real de entrada a OBS Studio Creator sin editar código.
-- Se actualizó `docs/index.html`:
-  - nuevo ítem de navegación **OBS Creator**,
-  - nueva sección con botón **Entrar a OBS Studio Creator**,
-  - nota de placeholders ampliada para incluir URL Creator.
-- Se actualizó `README.md` con guía de configuración de la URL del Creator en GitHub Actions Variables.
+- Se corrigió el workflow de GitHub Pages para resolver el error `Get Pages site failed (Not Found)` durante `actions/configure-pages`.
+- En `.github/workflows/pages.yml` se activó auto-habilitación de Pages:
+  - `actions/configure-pages@v5`
+  - `with: enablement: true`
+- Se mantiene el build del sitio en `_site/` y el reemplazo dinámico de `__OBS_STUDIO_CREATOR_URL__`.
+- Se actualizó `README.md` con una sección específica de troubleshooting para el error de configuración de Pages.
 - Se regeneró este archivo conforme a la documentación obligatoria.
 
 ## Requisitos o dependencias nuevas
 
-- No se añadieron dependencias de runtime al plugin ni al frontend.
-- Requisito de configuración para producción:
-  - variable `OBS_STUDIO_CREATOR_URL` en GitHub repository variables.
-- Stack sigue siendo estático (HTML/CSS) + GitHub Actions para deploy.
+- No se añadieron nuevas dependencias de runtime.
+- Requisitos operativos para deploy:
+  - GitHub Actions habilitado en repo/organización.
+  - GitHub Pages con fuente desde Actions.
+  - Permisos `pages:write` e `id-token:write` en el workflow.
 
 ## Guía paso a paso para probar la funcionalidad
 
-1. Validar compilación del plugin (sin regresiones):
+1. Verificar sintaxis/estructura del workflow modificado:
+   ```bash
+   sed -n '1,220p' .github/workflows/pages.yml
+   ```
+
+2. Verificar compilación del plugin sin regresión:
    ```bash
    cmake -S . -B build
    cmake --build build
    ```
 
-2. Validar que el placeholder exista en fuente web:
-   ```bash
-   rg "__OBS_STUDIO_CREATOR_URL__" docs/index.html
-   ```
-
-3. Simular localmente la sustitución que hace el workflow:
+3. Validar build local del sitio con sustitución de URL Creator:
    ```bash
    mkdir -p /tmp/site-test
    cp -R docs/* /tmp/site-test/
@@ -40,12 +40,9 @@
    rg "creator.tu-dominio.com" /tmp/site-test/index.html
    ```
 
-4. Preview local del sitio original:
-   ```bash
-   python -m http.server 8000
-   ```
-   - Abrir `http://127.0.0.1:8000/docs/`
+4. Push a rama habilitada (`main`, `master` o `work`) y revisar job:
+   - `Configure Pages (auto-enable)`
+   - `Upload artifact`
+   - `Deploy to GitHub Pages`
 
-5. Activar deploy real:
-   - Configurar `OBS_STUDIO_CREATOR_URL` en GitHub.
-   - Hacer push y revisar ejecución de `.github/workflows/pages.yml`.
+5. Si falla por permisos de organización, habilitar Actions/Pages a nivel org y reintentar.

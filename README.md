@@ -90,3 +90,17 @@ Configura la variable del repositorio:
 
 Si no se configura, se utiliza un fallback de ejemplo en el workflow.
 
+### Solución al error "Get Pages site failed (Not Found)"
+
+Si el workflow falla en `actions/configure-pages` con error `Not Found`, normalmente significa que GitHub Pages no estaba habilitado para el repositorio.
+
+Este proyecto ya incluye auto-habilitación en el workflow con:
+
+- `actions/configure-pages@v5` + `enablement: true`
+
+Verifica además:
+
+1. Permisos de Actions habilitados para el repositorio/organización.
+2. Que la rama de push coincida con el trigger del workflow (`main`, `master` o `work`).
+3. En **Settings → Pages**, que la fuente sea **GitHub Actions**.
+
