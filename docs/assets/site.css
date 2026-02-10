@@ -1,0 +1,126 @@
+:root {
+  --bg: #081022;
+  --surface: #0f1b33;
+  --text: #eaf1ff;
+  --muted: #b8c8eb;
+  --primary: #2a79ff;
+  --primary-2: #1e5fce;
+  --border: #24385f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top left, #12274f, var(--bg));
+  line-height: 1.55;
+}
+
+.container {
+  width: min(1060px, 92%);
+  margin: 0 auto;
+}
+
+.hero {
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav .brand {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.hero-content {
+  padding: 3rem 0 2rem;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #91b3ff;
+  font-size: 0.83rem;
+  margin-bottom: 0.6rem;
+}
+
+h1,
+h2 {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  max-width: 16ch;
+}
+
+.card-section {
+  margin: 1.5rem auto;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in hsl, var(--surface), black 8%);
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  border-color: transparent;
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.footer {
+  padding: 2rem 0;
+  color: var(--muted);
+}

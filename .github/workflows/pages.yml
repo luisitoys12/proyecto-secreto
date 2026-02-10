@@ -1,0 +1,55 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: ["main", "master", "work"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    env:
+      # Configurar en Settings > Secrets and variables > Actions > Variables
+      # Variable esperada: OBS_STUDIO_CREATOR_URL
+      OBS_STUDIO_CREATOR_URL: ${{ vars.OBS_STUDIO_CREATOR_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages (auto-enable)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Build site artifact with OBS Creator URL
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp -R docs/* _site/
+
+          if [ -z "${OBS_STUDIO_CREATOR_URL:-}" ]; then
+            OBS_STUDIO_CREATOR_URL="https://obsstudio.creator.example"
+          fi
+
+          sed -i "s|__OBS_STUDIO_CREATOR_URL__|${OBS_STUDIO_CREATOR_URL}|g" _site/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
