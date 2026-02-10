@@ -44,16 +44,8 @@ static inline void blog(int level, const char *format, ...)
     std::fprintf(stderr, "\n");
 }
 
-#ifdef __cplusplus
-#define OBS_FALLBACK_UNUSED [[maybe_unused]]
-#elif defined(__GNUC__) || defined(__clang__)
-#define OBS_FALLBACK_UNUSED __attribute__((unused))
-#else
-#define OBS_FALLBACK_UNUSED
-#endif
-
 #define OBS_MODULE_USE_DEFAULT_LOCALE(name, locale) \
-    OBS_FALLBACK_UNUSED static const char *obs_fallback_locale = name ":" locale
+    [[maybe_unused]] static const char *obs_fallback_locale = name ":" locale
 
 #ifdef __cplusplus
 }

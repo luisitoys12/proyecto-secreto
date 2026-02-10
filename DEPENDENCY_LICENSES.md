@@ -1,42 +1,51 @@
 # Dependency Licenses
 
-## Runtime / Build dependencies usadas en FASE 1
+## Runtime / Build dependencies
 
 1. **CMake**
    - Uso: sistema de build.
    - Licencia: BSD-3-Clause.
-   - Estado: **Permitida** (BSD).
+   - Estado: **Permitida**.
 
 2. **Compilador C++ estándar (GCC/Clang/MSVC)**
    - Uso: compilación del plugin.
-   - Licencia: toolchain del entorno, no redistribuida por este repositorio.
-   - Estado: **No embebida**, se usa solo en build.
+   - Licencia: toolchain del entorno (no redistribuida por este repositorio).
+   - Estado: **No embebida**.
 
-3. **SDK de OBS (opcional, no embebido en este repositorio)**
+3. **SDK de OBS (opcional, externo)**
    - Uso: compilar contra headers reales cuando `USE_OBS_SDK=ON`.
-   - Licencia: depende de la distribución del SDK instalada por el usuario.
-   - Estado: **Opcional y externo**; no se incluye código de terceros en este repositorio.
+   - Licencia: depende de la distribución instalada por el usuario.
+   - Estado: **Opcional y externo**.
+
+4. **IExpress (Windows, opcional para empaquetado .exe)**
+   - Uso: generar instalador autoextraíble `.exe` para distribución.
+   - Licencia: componente del sistema Windows.
+   - Estado: **Opcional y externo**.
+
+5. **GitHub Actions para Pages (CI/CD opcional)**
+   - Uso: despliegue automático del sitio en `docs/`.
+   - Acciones: `actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact`, `actions/deploy-pages`.
+   - Licencia: mantenidas por GitHub; validar en cada release corporativo.
+   - Estado: **Externo de CI**.
+
+6. **Stack web del sitio (HTML/CSS/JS nativo)**
+   - Uso: portal y control center web.
+   - Licencia: código original de este repositorio.
+   - Estado: **MIT (heredada del repo)**.
+
+7. **Servicios de videollamada (Jitsi/Zoom, opcionales por URL)**
+   - Uso: integración por enlace web en panel multicall.
+   - Licencia: servicios externos (no embebidos ni redistribuidos en este repo).
+   - Estado: **Integración por URL**.
 
 ## Código de terceros incluido
 
 - `third_party/obs_fallback/obs-module.h`:
   - Código original de este proyecto (no copiado de repositorios externos).
-  - Licencia: MIT (hereda licencia del repositorio).
+  - Licencia: MIT.
 
+## Nota sobre StreamFX
 
-4. **IExpress (Windows, opcional para empaquetado .exe)**
-   - Uso: generar instalador autoextraíble `.exe` del plugin para distribución.
-   - Licencia: componente integrado del sistema operativo Windows (no redistribuido por este repositorio).
-   - Estado: **Opcional y externo**; no se embebe código de terceros en el repositorio.
-
-
-5. **GitHub Actions para despliegue de Pages (opcionales de CI/CD)**
-   - Uso: despliegue automático del sitio estático ubicado en `docs/`.
-   - Acciones referenciadas: `actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact`, `actions/deploy-pages`.
-   - Licencia: mantenidas por GitHub; verificar licencia actual en cada repositorio oficial antes de un release corporativo.
-   - Estado: **Herramientas externas de CI**, no embebidas en binarios del plugin.
-
-6. **Stack web del sitio (HTML/CSS nativo)**
-   - Uso: portal web estático del proyecto (GitHub Pages).
-   - Licencia: código original de este repositorio (MIT).
-   - Estado: **Permitida** y sin dependencias de terceros para frontend.
+- Se añadieron **presets visuales estilo StreamFX-like** implementados con código original (CSS/JS propio).
+- **No se incorporó ni copió código** del repositorio externo referenciado.
+- Esto preserva la política de licencias del proyecto (MIT/BSD/Apache-2.0 únicamente para dependencias permitidas).

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OBS Broadcast Suite | Control Center</title>
+    <link rel="stylesheet" href="./assets/site.css" />
+    <link rel="stylesheet" href="./assets/control-center.css" />
+  </head>
+  <body>
+    <header class="hero thin">
+      <nav class="container nav">
+        <a class="brand" href="./index.html">OBS Broadcast Suite</a>
+        <ul>
+          <li><a href="#overlays">Overlays</a></li>
+          <li><a href="#multiview">Multicámara</a></li>
+          <li><a href="#calls">Jitsi/Zoom</a></li>
+          <li><a href="#media">Media URL</a></li>
+        </ul>
+      </nav>
+      <section class="container hero-content compact">
+        <p class="kicker">Versión oficial web · OBS Browser Source Ready</p>
+        <h1>Control Center Web</h1>
+        <p>Controla overlays dinámicos, vista multicámara, videollamadas y fuentes web para tu producción broadcast.</p>
+      </section>
+    </header>
+
+    <main class="container grid-2">
+      <section id="overlays" class="card-section">
+        <h2>Overlays dinámicos (Web URL para OBS)</h2>
+        <div class="field-grid">
+          <label>Título
+            <input id="overlayTitle" type="text" placeholder="FINAL - COPA REGIONAL" />
+          </label>
+          <label>Subtítulo
+            <input id="overlaySubtitle" type="text" placeholder="Estadio Central · En vivo" />
+          </label>
+          <label>Local
+            <input id="teamA" type="text" placeholder="Equipo A" />
+          </label>
+          <label>Visitante
+            <input id="teamB" type="text" placeholder="Equipo B" />
+          </label>
+          <label>Score Local
+            <input id="scoreA" type="number" min="0" value="0" />
+          </label>
+          <label>Score Visitante
+            <input id="scoreB" type="number" min="0" value="0" />
+          </label>
+          <label>Timer
+            <input id="timer" type="text" placeholder="65:22" />
+          </label>
+          <label>Color primario
+            <input id="accent" type="color" value="#2a79ff" />
+          </label>
+          <label>Estilo visual (StreamFX-like)
+            <select id="effectPreset">
+              <option value="clean">Clean</option>
+              <option value="cinematic">Cinematic Glow</option>
+              <option value="neon">Neon Edge</option>
+            </select>
+          </label>
+          <label>Opacidad overlay
+            <input id="overlayOpacity" type="range" min="35" max="100" step="1" value="92" />
+          </label>
+        </div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="publishOverlay">Publicar overlay</button>
+          <button class="btn" id="resetOverlay">Reset</button>
+          <button class="btn" id="openOverlayPreview">Abrir preview overlay</button>
+        </div>
+        <p class="note" id="overlayUrlOutput"></p>
+      </section>
+
+      <section id="multiview" class="card-section">
+        <h2>Vista multicámara</h2>
+        <p class="note">Agrega URLs web de cámaras/players (RTMP/web players/NVR dashboards con acceso web).</p>
+        <div class="field-grid">
+          <label>Nombre cámara
+            <input id="cameraName" type="text" placeholder="Cámara 1 - Principal" />
+          </label>
+          <label>URL cámara
+            <input id="cameraUrl" type="url" placeholder="https://..." />
+          </label>
+        </div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="addCamera">Agregar cámara</button>
+          <button class="btn" id="clearCameras">Limpiar</button>
+        </div>
+        <div id="cameraGrid" class="camera-grid"></div>
+      </section>
+
+      <section id="calls" class="card-section full-width">
+        <h2>Integración videollamadas (Jitsi Meet / Zoom Web)</h2>
+        <p class="note">Esta capa permite incrustar/supervisar URLs de sala web para rutearlas a escenas OBS vía Browser Source.</p>
+        <div class="field-grid triple">
+          <label>Proveedor
+            <select id="callProvider">
+              <option value="jitsi">Jitsi Meet</option>
+              <option value="zoom">Zoom Web Client</option>
+            </select>
+          </label>
+          <label>Título de sala
+            <input id="callTitle" type="text" placeholder="Entrevista post-partido" />
+          </label>
+          <label>URL sala
+            <input id="callUrl" type="url" placeholder="https://meet.jit.si/... o https://zoom.us/wc/..." />
+          </label>
+        </div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="addCall">Agregar llamada</button>
+          <button class="btn" id="clearCalls">Limpiar llamadas</button>
+        </div>
+        <div id="callList" class="media-list"></div>
+      </section>
+
+      <section id="media" class="card-section full-width">
+        <h2>Media URL Manager (legal-safe)</h2>
+        <p>
+          Gestiona enlaces y embeds oficiales para trailers/música/contenido. <strong>No incluye descarga</strong>
+          de YouTube/TikTok u otras plataformas para cumplir TOS y licencias.
+        </p>
+        <div class="field-grid triple">
+          <label>Plataforma
+            <select id="mediaPlatform">
+              <option value="youtube">YouTube (embed)</option>
+              <option value="tiktok">TikTok (link)</option>
+              <option value="generic">URL directa</option>
+            </select>
+          </label>
+          <label>Título
+            <input id="mediaTitle" type="text" placeholder="Trailer oficial" />
+          </label>
+          <label>URL
+            <input id="mediaUrl" type="url" placeholder="https://..." />
+          </label>
+        </div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="addMedia">Agregar media</button>
+          <button class="btn" id="clearMedia">Limpiar media</button>
+          <a class="btn" href="./virtual-studio.html">Abrir Studio Virtual Beta</a>
+        </div>
+        <div id="mediaList" class="media-list"></div>
+      </section>
+    </main>
+
+    <script src="./assets/control-center.js"></script>
+  </body>
+</html>
